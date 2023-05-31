@@ -61,7 +61,7 @@ function showCart() {
     "<button onclick='removeProduct(" + beverage.id + ")'>Eliminar</button>"
     + "<br>"
     + "<button onclick='addQuantity(" + beverage.id + ")'>+</button>");
-    // TODO ver por que no funciona la funcion remove product
+    // TODO ver por que no funciona la funcion remove product y la funcion addQuantity
     outputText += "</ul>";
     console.log(outputText);
     document.getElementById("cart-result").innerHTML = outputText;
