@@ -9,11 +9,23 @@
 <body>
     <h1>Ecommerce de bebidas</h1>
     <h2>Ingresar el nombre de la bebida a agregar al carrito</h2>
+    <div id="drinks">
+        <h3>Bebidas disponibles:</h3>
+        <div id="possibleDrinks">
+
+        </div>
+    </div>
     <input type="text" id="drink">
     <button id="addDrink">Agregar</button>
-    <div id="cart-result">
+    <div>
+        <h3>El carrito tiene los siguientes productos</h3>
+        <div id="cart-result">
         
+        </div>
+        <div id="total-products">
+            <p id="sumOfProducts"></p>
+        </div>
     </div>
-    <script src="./js/index.js"></script>
+    <script type = "module" src="./js/index.js"></script>
 </body>
 </html>
