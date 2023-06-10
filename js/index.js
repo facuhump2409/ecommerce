@@ -9,7 +9,8 @@ let pepsi = new Beverage("Pepsi", 150, 1, 5);
 let products = [coca, sprite, fanta, manaos, pepsi];
 console.log("Products: ", products);
 // The products would probably come from a database, but for this example, we will use this array
-let bag = JSON.parse(sessionStorage.getItem('bag')) || [];
+let bag = [];
+initializeBag();
 console.log("initial bag: ", bag);
 showCart();
 
@@ -19,6 +20,13 @@ products.forEach(a => {
     possibleProducts.innerHTML += "<p>" + a.name + " - Precio: $" + a.price + "<p>";
 });
 
+function initializeBag() {
+    let bagFromStorage = sessionStorage.getItem('bag');
+    bagFromStorage = JSON.parse(sessionStorage.getItem('bag')) || [];
+    bagFromStorage.forEach(a => {
+        bag.push(Object.assign(new Beverage, a));
+    });
+}
 //onClick button for add cart
 function addCart() {
     // let product = prompt("Ingrese el producto que desea agregar al carrito");
@@ -59,11 +67,14 @@ function addQuantity(id) {
 //onClick button to show cart
 function showCart() {
     sessionStorage.setItem('bag', JSON.stringify(bag));
-    let outputText = "<ul>";
-    bag.forEach((beverage, i) => outputText += "<li id=" + beverage.id + "> Producto "+ i + ": " + beverage.name + "</li>" + 
-    "<button onclick='removeProduct(" + beverage.id + ")'>Eliminar</button>"
-    + "<br>"
-    + "<button onclick='addQuantity(" + beverage.id + ")'>+</button>");
+    let outputText = "<ul>"; 
+    for (let i = 0; i < bag.length; i++) {
+        outputText += "<li id=" + bag[i].id + "> Producto "+ i + ": " + bag[i].name + "</li>" + 
+        "<button onclick='removeProduct(" + bag[i].id + ")'>Eliminar</button>"
+        + "<br>"
+        + "<button onclick='addQuantity(" + bag[i].id + ")'>+</button>";
+    }
+
     // TODO ver por que no funciona la funcion remove product y la funcion addQuantity
     outputText += "</ul>";
     console.log(outputText);
