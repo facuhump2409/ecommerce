@@ -9,7 +9,9 @@ let pepsi = new Beverage("Pepsi", 150, 1, 5);
 let products = [coca, sprite, fanta, manaos, pepsi];
 console.log("Products: ", products);
 // The products would probably come from a database, but for this example, we will use this array
-let bag = [];
+let bag = JSON.parse(sessionStorage.getItem('bag')) || [];
+console.log("initial bag: ", bag);
+showCart();
 
 document.write("<h3>Puede elegir entre los siguientes productos: " + products.map(a => a.name) + "<h3>");
 products.forEach(a => {
@@ -56,6 +58,7 @@ function addQuantity(id) {
 
 //onClick button to show cart
 function showCart() {
+    sessionStorage.setItem('bag', JSON.stringify(bag));
     let outputText = "<ul>";
     bag.forEach((beverage, i) => outputText += "<li id=" + beverage.id + "> Producto "+ i + ": " + beverage.name + "</li>" + 
     "<button onclick='removeProduct(" + beverage.id + ")'>Eliminar</button>"
