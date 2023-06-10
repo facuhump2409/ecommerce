@@ -14,7 +14,6 @@ initializeBag();
 console.log("initial bag: ", bag);
 showCart();
 
-document.write("<h3>Puede elegir entre los siguientes productos: " + products.map(a => a.name) + "<h3>");
 products.forEach(a => {
     let possibleProducts = document.getElementById("possibleDrinks");
     possibleProducts.innerHTML += "<p>" + a.name + " - Precio: $" + a.price + "<p>";
@@ -40,6 +39,11 @@ function addCart() {
         alert("El producto no existe");
         return;
     }
+    let elementInBag = bag.find(a => a.name === selectedProduct[0].name);
+    if(elementInBag) {
+        addQuantity(elementInBag.id);
+        return;
+    }
     bag.push(selectedProduct[0]);
     console.log(bag);
     showCart();
@@ -51,36 +55,67 @@ function getTotal() {
     document.getElementById("sumOfProducts").innerText = "Total:" + total;
 }
 
-function removeProduct(id) {
-    console.log("id: ", id);
-    bag = bag.filter(a => a.id !== id);
-    showCart();
-}
-
-function addQuantity(id) {
-    console.log("id: ", id);
-    product = bag.filter(a => a.id === id)[0];
-    product.quantity++;
-    showCart();
-}
-
 //onClick button to show cart
 function showCart() {
+    console.log("bag: ", bag);
     sessionStorage.setItem('bag', JSON.stringify(bag));
     let outputText = "<ul>"; 
     for (let i = 0; i < bag.length; i++) {
-        outputText += "<li id=" + bag[i].id + "> Producto "+ i + ": " + bag[i].name + "</li>" + 
-        "<button onclick='removeProduct(" + bag[i].id + ")'>Eliminar</button>"
+        let {id, name, quantity} = bag[i];
+        outputText += "<div id=" + id + " class='bagElement'> <li> Producto "+ i + ": " + name + ", cantidad: " + quantity +"</li>" + 
+        "<button class='deleteElement' onClick='removeProduct(" + id + ")'>Eliminar</button>"
         + "<br>"
-        + "<button onclick='addQuantity(" + bag[i].id + ")'>+</button>";
+        + "<button class='addQuantity' onClick='addQuantity(" + id + ")'>+</button>"
+        + "<button class='removeQuantity' onClick='removeQuantity(" + id + ")'>-</button>"
+        + "</div>";
     }
 
-    // TODO ver por que no funciona la funcion remove product y la funcion addQuantity
     outputText += "</ul>";
     console.log(outputText);
     document.getElementById("cart-result").innerHTML = outputText;
     getTotal();
 }
 
+window.addQuantity = (id) => {
+    console.log("addQuantity")
+    let selectedProduct = bag.filter(a => a.id === id)[0];
+    console.log("selectedProduct: ", selectedProduct);
+    let {quantity} = selectedProduct;
+    console.log("quantity: ", quantity)
+    let product = {
+        ...selectedProduct,
+        quantity: quantity + 1
+    };
+    console.log("product: ", product);
+    let objectProduct = Object.assign(new Beverage, product);
+    bag = bag.map(u => u.id !== objectProduct.id ? u : objectProduct);
+    showCart();
+}
+
+window.removeQuantity = (id) => {
+    console.log("removeQuantity")
+    let selectedProduct = bag.filter(a => a.id === id)[0];
+    console.log("selectedProduct: ", selectedProduct);
+    let {quantity} = selectedProduct;
+    console.log("quantity: ", quantity)
+    if(quantity === 1) {
+        removeProduct(id);
+        return;
+    }
+    let product = {
+        ...selectedProduct,
+        quantity: quantity - 1
+    };
+    console.log("product: ", product);
+    let objectProduct = Object.assign(new Beverage, product);
+    bag = bag.map(u => u.id !== objectProduct.id ? u : objectProduct);
+    showCart();
+}
+
+window.removeProduct = (id) => {
+    console.log("id from remove product: ", id);
+    bag = bag.filter(a => a.id !== id);
+    showCart();
+}
 
 document.getElementById("addDrink").addEventListener("click", addCart);
